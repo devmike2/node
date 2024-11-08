@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<%- include('../partials/head.ejs') %>
+<body>
+    <%- include('../partials/nav.ejs') %>
+    <form>
+        <h1>Sign up</h1>
+        <label for="firstname">firstname</label>
+        <input type="text" name="firstname" required>
+        <div class="firstname error"></div>
+        <label for="lastname">lastname</label>
+        <input type="text" name="lastname" required>
+        <div class="lastname error"></div>
+        <label for="email">Email</label>
+        <input type="text" name="email" required/>
+        <div class="email error" id="email-error"></div>
+        <label for="password">Password</label>
+        <input type="password" name="password" required>
+        <div class="password error" id="password-error"></div>
+        <button>Sign up</button>
+        <p>Already have an accout? <a href="/login">Login</a></p>
+    </form>
+    <%- include('../partials/footer.ejs') %>
+</body>
+<script>
+    const form = document.querySelector('form')
+    // const firstNameError = document.getElementById('.firstname.error')
+    // const lastNameError = document.querySelector('.lastname.error')
+    const emailError = document.getElementById('email-error')
+    const passwordError = document.getElementById('password-error')
+    form.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+
+        // =========== clear error ============
+        // emailError.textContent = ''
+        // passwordError.textContent = ''
+        
+
+        // =========== get details =================
+        const firstname = form.firstname.value;
+        const lastname = form.lastname.value
+        const email = form.email.value;
+        const password = form.password.value;
+      
+        try {
+            const res = await fetch('/signup', {
+                method: 'POST',
+                body: JSON.stringify({ firstname, lastname, email, password }),
+                headers: {'Content-Type': 'application/json'}
+            })
+            const data = await res.json()
+            
+            if(data.errors){
+                emailError.textContent = data.errors.email
+                passwordError.textContent = data.errors.password
+            }
+            if(data.user){
+                console.log(data)
+                location.assign('/')
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    })
+</script>
+</html>

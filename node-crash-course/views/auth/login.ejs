@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<%- include('../partials/head.ejs') %>
+<body>
+    <%- include('../partials/nav.ejs') %>
+    <form>
+    <h1>login</h1>
+    <label for="email">Email</label>
+    <input class="input" type="text" name="email" required/>
+    <label for="password">Password</label>
+    <input class="input1" type="password" name="password" required>
+    <div class="credentials error"></div>
+    <button>Login</button>
+    <p>Don't have an account?<a href="/signup"> signup</a></p>
+</form>
+<%- include('../partials/footer.ejs') %>
+</body>
+<script>
+    const form = document.querySelector('form')
+    const credentialsError = document.querySelector('.credentials.error')
+    const input = document.querySelector('.input')
+    const input1 = document.querySelector('.input1')
+
+    form.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+
+        //======== clear screen =============
+        credentialsError.textContent = ''
+
+
+       // =========== get details =================
+        const email = form.email.value;
+        const password = form.password.value;
+      
+        try {
+            const res = await fetch('/login',{
+                method: 'POST',
+                body: JSON.stringify({email, password}),
+                headers : {'Content-Type': 'application/json'} 
+                
+            })
+            const data = await res.json()
+            console.log(data)
+            if(data.errors){
+                credentialsError.textContent = data.errors.credential
+                input.style.borderColor = 'crimson'
+                input1.style.borderColor = 'crimson'
+            }
+            if(data.user){
+                location.assign('/')
+
+            }
+        } catch (err) {
+            console.log(err)
+        }
+            
+
+
+    })
+</script>
+</html>
