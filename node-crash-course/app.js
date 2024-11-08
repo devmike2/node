@@ -3,6 +3,7 @@ const morgan = require('morgan')
 const mongoose = require('mongoose')
 const blogRoutes = require('./routes/blogRoutes')
 const authRouter = require('./routes/authRouter')
+require('dotenv').config()
 
 
 //=============== create an express app =======
@@ -10,13 +11,13 @@ const authRouter = require('./routes/authRouter')
 const app = express()
 
 // connect to mongoDb(DATABASE) and listening  for request
-
-const dbURI = 'mongodb+srv://devmike:dmuserp@nodetut.6rxmg.mongodb.net/node-tuts'
+const port = process.env.PORT
+const dbURI = process.env.MONGOURI
 mongoose.connect(dbURI)
 .then(resulut =>{
-    app.listen(3500);
+    app.listen(port);
     console.log('Connected to Db')
-    console.log('Listening to request on port 3500')
+    console.log(`Listening to request on port ${port}`)
     
 })
 .catch((err) => console.log(err))
